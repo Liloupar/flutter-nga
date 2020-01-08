@@ -10,79 +10,49 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MyHomePage(),
+      routes: {
+//        "new_page": (context) => NewRoute()
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  TabController _tabController; //需要定义一个Controller
+  List tabs = ["新闻", "历史", "图片"];
 
   @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
-            new Text(
-              '$_counter',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .display1,
-            ),
-            FlatButton(
-              child: Text("open new router"),
-              textColor: Colors.black,
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return NewRoute();
-                }));
-              },
-            )
-          ],
-        ),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+  void initState() {
+    super.initState();
+    // 创建Controller
+    _tabController = TabController(length: tabs.length, vsync: this);
   }
-}
 
-class NewRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("New route"),
+        title: Text("NGA开源版"),
+        bottom: TabBar(
+            //生成Tab菜单
+            controller: _tabController,
+            tabs: tabs.map((e) => Tab(text: e)).toList()),
       ),
-      body: Center(
-        child: Text("This is new route"),
-      ),
+      body: TabBarView(
+          controller: _tabController,
+          children: tabs.map((e) {
+            return Container(
+              alignment: Alignment.center,
+              child: Text(e),
+            );
+          }).toList()),
     );
   }
 }
